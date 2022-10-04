@@ -95,7 +95,7 @@ export default function DebtForm() {
                     </FormControl>
                 </Flex>
                 <Flex
-                    direction={{ base: 'column', sm: 'row' }}
+                    direction={{ base: 'column', sm: 'row', sx: 'row' }}
                     align={'start'}
                     gap={1}
                 >

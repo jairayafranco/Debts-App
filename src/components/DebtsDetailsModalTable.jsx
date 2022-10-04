@@ -18,6 +18,7 @@ import {
 import { UseAppContext } from '../context/Context';
 import DebtsHistorial from './DebtsHistorial';
 import { useState } from 'react';
+import { fechaPagos } from '../helpers';
 
 export default function DebtsDetailsModalTable({ debt }) {
     const { updateCuotasList } = UseAppContext();
@@ -76,21 +77,31 @@ export default function DebtsDetailsModalTable({ debt }) {
     };
 
     const handleCuotas = () => {
-        const { valor, cuotas, cuotasList } = debt;
+        const { valor, cuotasList } = debt;
         if (!cuota) return toast({ title: 'Ingrese un valor', status: 'warning', position: 'top', duration: 3000, isClosable: true });
 
         const cuotasChecked = cuotasList.filter((cuota) => cuota.completado);
-        const cuotasUnChecked = cuotasList.filter((cuota) => !cuota.completado);
         const cuotasCompletadas = cuotasChecked.reduce((acc, cuota) => acc + cuota.valorCuota, 0);
         const cuotasRestantes = cuota - cuotasChecked.length;
         const valorFinal = valor - cuotasCompletadas;
         const newCuotasList = [];
 
         for (let i = 1; i <= cuotasRestantes; i++) {
-            newCuotasList.push({ [cuotasChecked.length + i]: '', valorCuota: valorFinal / cuotasRestantes, completado: false });
+            newCuotasList.push({ [cuotasChecked.length + i]: fechaPagos((i - 1) + cuotasChecked.length), valorCuota: valorFinal / cuotasRestantes, completado: false });
         }
+        newCuotasList.push(...cuotasChecked);
+        newCuotasList.sort((a, b) => Object.keys(a)[0] - Object.keys(b)[0]);
+        const nuevoHistorial = [...debt?.historial, {
+            fecha: new Date().toLocaleDateString(),
+            descripcion: 'Cuotas',
+            valor: '',
+            total: valor,
+            valorCuota: parseInt(valorFinal / cuotasRestantes),
+            numCuotas: cuota,
+        }];
 
-        console.log(newCuotasList, debt);
+        updateCuotasList(debt.id, null, null, newCuotasList, nuevoHistorial, valor);
+        setCuota('');
     }
 
     return (
@@ -133,19 +144,17 @@ export default function DebtsDetailsModalTable({ debt }) {
             }
             <Flex
                 mt={4}
-                justifyContent='flex-end'
-                alignItems='center'
-                w='100%'
                 gap={1}
+                direction={{ base: 'column', md: 'row' }}
             >
                 <FormControl id="saldo" mt={2}>
                     <FormLabel>Abonar a saldo</FormLabel>
                     <Input type="number" name="motivo" value={abono} onChange={(e) => setAbono(e.target.value)} autoComplete='off' />
                     <Button bg={'blue.300'} mt={1} onClick={handleAbono}>Abonar</Button>
                 </FormControl>
-                <FormControl id="Cuotas" mt={2}>
+                <FormControl id="cuotas" mt={2}>
                     <FormLabel>Cambiar N° de Cuotas</FormLabel>
-                    <Input type="number" name="motivo" autoComplete='off' value={cuota} onChange={(e) => setCuota(e.target.value)} />
+                    <Input type="number" name="cuotas" value={cuota} onChange={(e) => setCuota(e.target.value)} autoComplete='off' />
                     <Button bg={'blue.300'} mt={1} onClick={handleCuotas}>Cambiar</Button>
                 </FormControl>
             </Flex>

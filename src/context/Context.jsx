@@ -56,7 +56,7 @@ export function ContextProvider({ children }) {
     }, []);
 
     //Update cuotasList in firestore
-    const updateCuotasList = async (id, index, status, currentCuotasList, abonoHistory, valorConAbono) => {
+    const updateCuotasList = async (id, index, status, currentCuotasList, history, valorConAbono) => {
         try {
             const debtCuotasList = doc(db, "deudas", id);
             const newCuotasList = [...currentCuotasList].map((cuota, i) => {
@@ -65,10 +65,10 @@ export function ContextProvider({ children }) {
                 }
                 return cuota;
             });
-            await abonoHistory?.length > 0 ?
+            await history?.length > 0 ?
                 updateDoc(debtCuotasList, {
                     cuotasList: newCuotasList,
-                    historial: abonoHistory,
+                    historial: history,
                     valor: valorConAbono
                 }) :
                 updateDoc(debtCuotasList, {
