@@ -98,7 +98,6 @@ export default function DebtsDetailsModalTable({ debt }) {
             valorCuota: parseInt(valorFinal / cuotasRestantes),
             numCuotas: cuota,
         }];
-        console.log(newCuotasList);
         updateCuotasList(debt.id, null, null, newCuotasList, nuevoHistorial, valor);
         setCuota('');
     }
