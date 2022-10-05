@@ -32,7 +32,6 @@ export default function DebtCard({ debt }) {
                         <Heading fontSize={'2xl'} align={'center'} fontWeight={500} fontFamily={'body'}>
                             {debt?.motivo.charAt(0).toUpperCase() + debt?.motivo.slice(1)}
                         </Heading>
-                        {/* <Text color={'gray.500'}>Frontend Developer</Text> */}
                     </Stack>
 
                     <Stack direction={'row'} justify={'center'} spacing={6}>

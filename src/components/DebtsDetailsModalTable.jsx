@@ -34,7 +34,6 @@ export default function DebtsDetailsModalTable({ debt }) {
     // const handleDisable = (index) => {
     //     const fechaActual = new Date().toLocaleDateString();
     //     const fechaCuotaDebtList = debt.cuotasList[index][index + 1];
-    //     console.log(fechaActual, fechaCuotaDebtList);
 
     //     if (fechaActual !== fechaCuotaDebtList) {
     //         return true;
@@ -99,7 +98,7 @@ export default function DebtsDetailsModalTable({ debt }) {
             valorCuota: parseInt(valorFinal / cuotasRestantes),
             numCuotas: cuota,
         }];
-
+        console.log(newCuotasList);
         updateCuotasList(debt.id, null, null, newCuotasList, nuevoHistorial, valor);
         setCuota('');
     }
@@ -113,7 +112,7 @@ export default function DebtsDetailsModalTable({ debt }) {
                             <Th>Cuotas</Th>
                             <Th>Valor</Th>
                             <Th>Fecha</Th>
-                            <Th>Estado</Th>
+                            {debt.activo && <Th>Estado</Th>}
                         </Tr>
                     </Thead>
                     <Tbody>
@@ -122,12 +121,12 @@ export default function DebtsDetailsModalTable({ debt }) {
                                 <Td>{Object.keys(cuota)[0]}</Td>
                                 <Td>{parseInt(cuota.valorCuota)}</Td>
                                 <Td>{Object.values(cuota)[0]}</Td>
-                                <Td><Checkbox isChecked={cuota.completado} onChange={() => handleCheckBox(debt.id, index, cuota.completado)} /></Td>
+                                {debt.activo && <Td> <Checkbox isChecked={cuota.completado} onChange={() => handleCheckBox(debt.id, index, cuota.completado)} /></Td>}
                             </Tr>
                         ))}
                     </Tbody>
                     <Tfoot>
-                        <Tr>
+                        {debt.activo && <Tr>
                             <Th></Th>
                             <Th></Th>
                             <Th>Restante</Th>
@@ -135,14 +134,14 @@ export default function DebtsDetailsModalTable({ debt }) {
                                 {parseInt(debt?.cuotasList.reduce((acc, cuota) => acc + cuota.valorCuota, 0)
                                     - debt?.cuotasList?.filter((cuota) => cuota.completado).reduce((acc, cuota) => acc + cuota.valorCuota, 0))}
                             </Th>
-                        </Tr>
+                        </Tr>}
                     </Tfoot>
                 </Table>
             </TableContainer>
             {
                 debt?.historial?.length > 0 && <DebtsHistorial historial={debt.historial} />
             }
-            <Flex
+            {debt.activo && <Flex
                 mt={4}
                 gap={1}
                 direction={{ base: 'column', md: 'row' }}
@@ -157,7 +156,7 @@ export default function DebtsDetailsModalTable({ debt }) {
                     <Input type="number" name="cuotas" value={cuota} onChange={(e) => setCuota(e.target.value)} autoComplete='off' />
                     <Button bg={'blue.300'} mt={1} onClick={handleCuotas}>Cambiar</Button>
                 </FormControl>
-            </Flex>
+            </Flex>}
         </>
     )
 }

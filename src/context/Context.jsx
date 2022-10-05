@@ -56,7 +56,7 @@ export function ContextProvider({ children }) {
     }, []);
 
     //Update cuotasList in firestore
-    const updateCuotasList = async (id, index, status, currentCuotasList, history, valorConAbono) => {
+    const updateCuotasList = async (id, index, status, currentCuotasList, history, valor) => {
         try {
             const debtCuotasList = doc(db, "deudas", id);
             const newCuotasList = [...currentCuotasList].map((cuota, i) => {
@@ -69,7 +69,7 @@ export function ContextProvider({ children }) {
                 updateDoc(debtCuotasList, {
                     cuotasList: newCuotasList,
                     historial: history,
-                    valor: valorConAbono
+                    valor: valor
                 }) :
                 updateDoc(debtCuotasList, {
                     cuotasList: newCuotasList
@@ -79,8 +79,17 @@ export function ContextProvider({ children }) {
         }
     }
 
+    const finishDebt = async (id) => {
+        try {
+            const debt = doc(db, "deudas", id);
+            await updateDoc(debt, { activo: false });
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     return (
-        <Context.Provider value={{ login, userSessionData, logout, loading, addDebt, allDebts, updateCuotasList }}>
+        <Context.Provider value={{ login, userSessionData, logout, loading, addDebt, allDebts, updateCuotasList, finishDebt }}>
             {children}
         </Context.Provider>
     );

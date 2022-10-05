@@ -11,9 +11,12 @@ import {
     useColorModeValue,
 } from '@chakra-ui/react';
 import DebtsDetailsModalTable from './DebtsDetailsModalTable';
+import { UseAppContext } from '../context/Context';
 
 export default function DebtDetailsModal({ debt }) {
     const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const { finishDebt } = UseAppContext();
 
     return (
         <>
@@ -27,7 +30,8 @@ export default function DebtDetailsModal({ debt }) {
                     transform: 'translateY(-2px)',
                     boxShadow: 'lg',
                 }}
-                onClick={onOpen}>
+                onClick={onOpen}
+            >
                 Ver detalles
             </Button>
 
@@ -42,7 +46,7 @@ export default function DebtDetailsModal({ debt }) {
                         <DebtsDetailsModalTable debt={debt} />
                     </ModalBody>
                     <ModalFooter>
-                        <Button bg={'green.400'} mr={1} onClick={onClose}>Finalizar Deuda</Button>
+                        {debt.activo && <Button bg={'green.400'} mr={1} onClick={() => finishDebt(debt.id)}>Finalizar Deuda</Button>}
                         <Button onClick={onClose}>Cerrar</Button>
                     </ModalFooter>
                 </ModalContent>
