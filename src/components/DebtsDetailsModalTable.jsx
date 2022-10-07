@@ -81,12 +81,11 @@ export default function DebtsDetailsModalTable({ debt }) {
 
         const cuotasChecked = cuotasList.filter((cuota) => cuota.completado);
         const cuotasCompletadas = cuotasChecked.reduce((acc, cuota) => acc + cuota.valorCuota, 0);
-        const cuotasRestantes = cuota - cuotasChecked.length;
         const valorFinal = valor - cuotasCompletadas;
         const newCuotasList = [];
 
-        for (let i = 1; i <= cuotasRestantes; i++) {
-            newCuotasList.push({ [cuotasChecked.length + i]: fechaPagos((i - 1) + cuotasChecked.length), valorCuota: valorFinal / cuotasRestantes, completado: false });
+        for (let i = 1; i <= cuota; i++) {
+            newCuotasList.push({ [cuotasChecked.length + i]: fechaPagos((i - 1) + cuotasChecked.length), valorCuota: valorFinal / cuota, completado: false });
         }
         newCuotasList.push(...cuotasChecked);
         newCuotasList.sort((a, b) => Object.keys(a)[0] - Object.keys(b)[0]);
@@ -94,8 +93,8 @@ export default function DebtsDetailsModalTable({ debt }) {
             fecha: new Date().toLocaleDateString(),
             descripcion: 'Cuotas',
             valor: '',
-            total: valor,
-            valorCuota: parseInt(valorFinal / cuotasRestantes),
+            total: valorFinal,
+            valorCuota: parseInt(valorFinal / cuota),
             numCuotas: cuota,
         }];
         updateCuotasList(debt.id, null, null, newCuotasList, nuevoHistorial, valor);

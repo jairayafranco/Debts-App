@@ -69,7 +69,8 @@ export function ContextProvider({ children }) {
                 updateDoc(debtCuotasList, {
                     cuotasList: newCuotasList,
                     historial: history,
-                    valor: valor
+                    valor: valor,
+                    cuotas: currentCuotasList.length,
                 }) :
                 updateDoc(debtCuotasList, {
                     cuotasList: newCuotasList
